@@ -1,5 +1,7 @@
 package cholog;
 
+import java.util.Objects;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,9 +13,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,6 +44,7 @@ public class JUnit5Test {
          * 따라서 해당 메서드는 테스트 메서드가 아니기 때문에, 테스트 메서드로서의 역할을 수행하지 않습니다.
          * `@Test` 애노테이션을 사용하면 해당 메서드는 테스트 메서드가 되며, 테스트 메서드로서의 역할을 수행합니다.
          */
+        @Test
         void Test_애노테이션을_붙여_테스트_메서드로_만든다() {
             // TODO: `@Test` 애노테이션을 활용하여 테스트가 실행되게 해주세요.
         }
@@ -48,9 +54,8 @@ public class JUnit5Test {
          * 따라서 해당 메서드는 테스트 메서드가 아니기 때문에, 테스트 메서드로서의 역할을 수행하지 않습니다.
          */
         @Test
-        int return_타입이_void가_아니라면_테스트_메서드가_아니다() {
+        void return_타입이_void가_아니라면_테스트_메서드가_아니다() {
             // TODO: return 타입을 변경하여 해당 테스트가 실행되게 해주세요.
-            return 0;
         }
     }
 
@@ -74,6 +79,7 @@ public class JUnit5Test {
          * ps. 다만 학습 테스트에서는 의미 전달을 위해 한글 메서드명을 사용합니다.
          */
         @Test
+        @DisplayName("@DisplayName 어노테이션을 붙여 경고를 제거한다.")
         void DisplayName_애노테이션을_붙여_경고를_제거한다() {
             // TODO: `@DisplayName` 애노테이션을 활용하여 `Non-ASCII characters` 경고를 제거해주세요.
         }
@@ -84,6 +90,7 @@ public class JUnit5Test {
      * 중첩 클래스는 클래스 내부에 선언된 클래스를 의미합니다.
      * 중첩으로 표현하는 이유는 클래스의 의미를 명확하게 하기 위함입니다.
      */
+    @Nested
     @DisplayName("@Nested 애노테이션 학습 테스트")
     class NestedAnnotationTest {
         /**
@@ -105,6 +112,7 @@ public class JUnit5Test {
      * `@Disabled` 애노테이션은 `@Test` 애노테이션과 함께 사용됩니다.
      * `@Test` 애노테이션은 해당 메서드가 테스트 메서드임을 나타내며, `@Disabled` 애노테이션은 해당 테스트를 비활성화한다는 것을 나타냅니다.
      */
+    @Disabled
     @Nested
     @DisplayName("@Disabled 애노테이션 학습 테스트")
     class DisabledAnnotationTest {
@@ -113,6 +121,7 @@ public class JUnit5Test {
          * 따라서 해당 메서드는 테스트 메서드로서의 역할을 수행합니다.
          * `@Disabled` 애노테이션을 사용하면 해당 메서드는 테스트 메서드가 아니기 때문에, 테스트 메서드로서의 역할을 수행하지 않습니다.
          */
+        @Disabled
         @Test
         @DisplayName("@Disabled 애노테이션을 붙여줘야 테스트 메서드로서의 역할을 수행하지 않는다")
         void Disabled_애노테이션을_붙여줘야_테스트_메서드로서의_역할을_수행하지_않는다() {
@@ -178,9 +187,7 @@ public class JUnit5Test {
             final var expected = 3;
 
             // TODO: 아래 코드를 assertEquals 메서드로 대체해주세요. 제대로 동작하는지 확인하기 위해 expected와 actual의 값을 바꿔보세요.
-            if (expected != actual) {
-                throw new RuntimeException("expected: <" + expected + "> but was: <" + actual + ">");
-            }
+            assertEquals(expected, actual);
         }
 
         /**
@@ -198,6 +205,17 @@ public class JUnit5Test {
 
                 public LocalObject(int value) {
                     this.value = value;
+                }
+
+                @Override
+                public boolean equals(final Object o) {
+                    if (this == o) {
+                        return true;
+                    }
+                    if (!(o instanceof LocalObject that)) {
+                        return false;
+                    }
+                    return value == that.value;
                 }
             }
 
@@ -224,9 +242,7 @@ public class JUnit5Test {
 
             // TODO: 아래 코드를 assertEquals(expected, actual, message) 형태로 변경하여 "두 값이 일치하지 않습니다." 라는 메시지를 출력해주세요.
             // TODO: 제대로 동작하는지 확인하기 위해 expected와 actual의 값을 바꿔보세요.
-            if (expected != actual) {
-                throw new RuntimeException("두 값이 일치하지 않습니다. ==> expected: <" + expected + "> but was: <" + actual + ">");
-            }
+            assertEquals(actual, expected, "두 값이 일치하지 않습니다.");
         }
 
         /**
@@ -243,9 +259,7 @@ public class JUnit5Test {
             final var unexpected = 0;
 
             // TODO: 아래 코드를 assertNotEquals 메서드로 대체해주세요. 제대로 동작하는지 확인하기 위해 expected와 actual의 값을 바꿔보세요.
-            if (unexpected == actual) {
-                throw new RuntimeException("expected: not equal but was: <" + unexpected + ">");
-            }
+            assertNotEquals(actual, unexpected);
         }
     }
 
@@ -273,9 +287,7 @@ public class JUnit5Test {
             final var expected = object;
 
             // TODO: 아래 코드를 assertSame 메서드로 대체해주세요. 제대로 동작하는지 확인하기 위해 expected와 actual의 값을 바꿔보세요.
-            if (actual == actual) {
-                throw new RuntimeException("expected: not equal but was: <" + expected + ">");
-            }
+            assertSame(actual, expected);
         }
     }
 
@@ -294,13 +306,7 @@ public class JUnit5Test {
         @DisplayName("assertThrows 메서드로 특정 예외가 발생하는지 비교한다")
         void assertThrows_메서드로_특정_예외가_발생하는지_비교한다() {
             // TODO: try-catch문을 사용하지 않고 assertThrows 메서드를 사용하여 테스트가 성공하도록 해주세요.
-            try {
-                causeException();
-            } catch (Exception e) {
-                return;
-            }
-
-            throw new RuntimeException("예외가 발생하지 않았습니다.");
+            assertThrows(IllegalCallerException.class, this::causeException);
         }
 
         /**
@@ -311,7 +317,7 @@ public class JUnit5Test {
         @DisplayName("assertThrows 메서드로 특정 예외가 발생하는지 비교하며, 특정 예외가 발생하지 않는다면 테스트가 실패한다")
         void assertThrows_메서드로_특정_예외가_발생하는지_비교하며_특정_예외가_발생하지_않는다면_테스트가_실패한다() {
             // TODO: `causeException` 메서드에서 발생하는 예외 타입을 확인 후 `expectedType`를 변경하여 테스트가 성공하도록 해주세요.
-            assertThrows(IllegalArgumentException.class, this::causeException);
+            assertThrows(IllegalCallerException.class, this::causeException);
 
 
             /* ----- 아래는 추가로 학습할 분만 보세요! -----
@@ -351,7 +357,9 @@ public class JUnit5Test {
         @DisplayName("assertDoesNotThrow 메서드로 특정 예외가 발생하지 않는 것을 명시한다")
         void assertDoesNotThrow_메서드로_특정_예외가_발생하지_않는_것을_명시한다() {
             // TODO: `assertDoesNotThrow` 메서드를 사용하여 테스트의 의도를 명확하게 표현해주세요.
-            final var number = Integer.valueOf(0x80000000);
+            assertDoesNotThrow(() -> {
+                final var number = Integer.valueOf(0x80000000);
+            });
         }
     }
 
@@ -374,13 +382,15 @@ public class JUnit5Test {
         @DisplayName("assertAll 메서드로 여러 검증 코드를 한 번에 실행한다")
         void assertAll_메서드로_여러_검증_코드를_한_번에_실행한다() {
             // TODO: `assertAll`을 사용하지 않고 모든 테스트를 통과시키는 것과 `assertAll`를 사용하고 모든 테스트를 통과시키는 것에 차이를 비교해보세요.
-            assertEquals(3, 1 + 2);
-            assertEquals(5, 3 + 2);
-            assertEquals(21, 7 * 3);
-            assertEquals(32, 3 * 7 ^ 5);
-            assertEquals(4, 7 * 3 / 5 + 33 / 21);
-            assertEquals(22, 33 * 3 / 5 + 7 / 2);
-            assertEquals(22, 33 * 3 / 5 + 7 / 2 + 1);
+            assertAll(
+                () -> assertEquals(3, 1 + 2),
+                () -> assertEquals(5, 2 + 3),
+                () -> assertEquals(21, 7 * 3),
+                () -> assertEquals(16, 7 * 3 ^ 5),
+                () -> assertEquals(5, 7 * 3 / 5 + 33 / 21),
+                () -> assertEquals(22, 33 * 3 / 5 + 7 / 2),
+                () -> assertEquals(23, 33 * 3 / 5 + 7 / 2 + 1)
+            );
         }
     }
 
@@ -409,41 +419,31 @@ public class JUnit5Test {
          * `@ValueSource` 애노테이션의 속성들은 다음과 같이 배열 형태로 입력이 가능합니다.
          * `@ValueSource` 애노테이션의 속성을 배열 형태로 입력해줌으로서, 각 배열의 값마다 각각의 테스트를 수행하도록 구현할 수 있습니다.
          */
-        @Test
+        @ParameterizedTest
+        @ValueSource(ints = {1, 2, 3, 4})
         @DisplayName("ValueSource 애노테이션을 붙여 정수 매개변수를 여러 번 입력받는다")
-        void ValueSource_애노테이션을_붙여_정수_매개변수를_여러_번_입력받는다() {
+        void ValueSource_애노테이션을_붙여_정수_매개변수를_여러_번_입력받는다(int value) {
             // TODO: `@ValueSource`를 사용하지 않고 여러 정수의 범위를 테스트하는 것과, `@ValueSource`를 사용해서 테스트하는 것의 차이를 비교해보세요.
-            assertTrue(1 > 0 && 1 < 10);
-            assertTrue(2 > 0 && 2 < 10);
-            assertTrue(3 > 0 && 3 < 10);
-            assertTrue(4 > 0 && 4 < 10);
+            assertTrue(value > 0 && value < 10);
         }
 
         /**
          * `@ValueSource` 애노테이션은 `ints`와 같은 속성을 통해 정수 형태를 포함한 string, char, long 등의 다양한 타입을 지원합니다.
          */
-        @Test
+        @ParameterizedTest
+        @ValueSource(strings = {"a", "b", "c"})
         @DisplayName("ValueSource 애노테이션을 붙여 문자열 매개변수를 여러 번 입력받는다")
-        void ValueSource_애노테이션을_붙여_문자열_매개변수를_여러_번_입력받는다() {
+        void ValueSource_애노테이션을_붙여_문자열_매개변수를_여러_번_입력받는다(String value) {
             // TODO: `@ValueSource`를 사용하지 않고 여러 문자열의 Length를 테스트하는 것과, `@ValueSource`를 사용해서 테스트하는 것의 차이를 비교해보세요.
-            String value1 = "a";
-            String value2 = "b";
-            String value3 = "c";
-
-            assertEquals(value1.length(), 1);
-            assertEquals(value2.length(), 1);
-            assertEquals(value3.length(), 1);
+            assertEquals(value.length(), 1);
         }
 
-        @Test
+        @ParameterizedTest
+        @ValueSource(strings = {"1", "2", "3", "4", "5"})
         @DisplayName("ValueSource 애노테이션을 활용하여 1부터 5까지의 문자열 값을 Integer로 parseInt하는 로직이 예외를 발생시키지 않는 지 검증한다")
-        void ValueSource_애노테이션을_활용하여_1부터_5까지의_문자열_값을_Integer로_변경하는_로직이_예외를_발생시키지_않는_지_검증한다() {
+        void ValueSource_애노테이션을_활용하여_1부터_5까지의_문자열_값을_Integer로_변경하는_로직이_예외를_발생시키지_않는_지_검증한다(String value) {
             // TODO: `@ValueSource`를 사용하지 않고 1~5 까지의 문자열 값을 `Integer`로 `parseInt`하는 로직을 테스트하는 것과, `@ValueSource`를 사용해서 테스트하는 것의 차이를 비교해보세요.
-            assertDoesNotThrow(() -> Integer.parseInt("1"));
-            assertDoesNotThrow(() -> Integer.parseInt("2"));
-            assertDoesNotThrow(() -> Integer.parseInt("3"));
-            assertDoesNotThrow(() -> Integer.parseInt("4"));
-            assertDoesNotThrow(() -> Integer.parseInt("5"));
+            assertDoesNotThrow(() -> Integer.parseInt(value));
         }
 
         /**
@@ -468,24 +468,21 @@ public class JUnit5Test {
         @ParameterizedTest
         @MethodSource("methodSourcesTestArguments")
         @DisplayName("MethodSource 애노테이션을 붙여 Object 매개변수를 여러 번 입력받는다")
-        void MethodSource_애노테이션을_붙여_Object_매개변수를_여러_번_입력받는다() {
+        void MethodSource_애노테이션을_붙여_Object_매개변수를_여러_번_입력받는다(Object value) {
             // TODO: `MethodSource`를 사용하지 않고 Object 객체들을 직접 선언하여 테스트하는 방식과, `MethodSource`를 사용하여 Object를 입력받아 테스트하는 방식의 차이를 비교해보세요.
-            Object object1 = new Object();
-            Object object2 = new Object();
-            Object object3 = new Object();
-            Object object4 = new Object();
-
-            assertInstanceOf(Object.class, object1);
-            assertInstanceOf(Object.class, object2);
-            assertInstanceOf(Object.class, object3);
-            assertInstanceOf(Object.class, object4);
+            assertInstanceOf(Object.class, value);
         }
 
         /**
          * `Arguments`를 `Stream` 내부에 여러 개 선언해줌으로서, 각 `Arguments`마다 각각의 테스트를 수행하도록 구현할 수 있습니다.
          */
         private static Stream<Arguments> methodSourcesTestArguments() {
-            return Stream.of(Arguments.arguments());
+            return Stream.of(
+                    Arguments.arguments(new Object()),
+                    Arguments.arguments(new Object()),
+                    Arguments.arguments(new Object()),
+                    Arguments.arguments(new Object())
+            );
         }
 
         /**
@@ -495,36 +492,37 @@ public class JUnit5Test {
         @ParameterizedTest
         @MethodSource("methodSourceIterableTestArguments")
         @DisplayName("MethodSource 애노테이션을 붙여 Iterable 매개변수를 입력받는다")
-        void MethodSource_애노테이션을_붙여_Iterable_매개변수를_입력받는다() {
+        void MethodSource_애노테이션을_붙여_Iterable_매개변수를_입력받는다(List<Integer> numbers) {
             // TODO: `MethodSource`를 사용하지 않고 Iterable 인스턴스들을 직접 선언하여 테스트하는 방식과, `MethodSource`를 통해 입력받아 테스트하는 방식의 차이를 비교해보세요.
-            List<Integer> numbers1 = List.of(1, 4, 5);
-            List<Integer> numbers2 = List.of(1, 2, 3);
-            List<Integer> numbers3 = List.of(1, 3, 4);
-
-            assertEquals(numbers1.size(), 3);
-            assertEquals(numbers2.size(), 3);
-            assertEquals(numbers3.size(), 3);
+            assertEquals(numbers.size(), 3);
         }
 
         private static Stream<Arguments> methodSourceIterableTestArguments() {
-            return Stream.of(Arguments.arguments());
+            return Stream.of(
+                    Arguments.arguments(List.of(1,4,5)),
+                    Arguments.arguments(List.of(1,2,3)),
+                    Arguments.arguments(List.of(1,3,4))
+            );
         }
 
         /**
          * `@MethodSource` 애노테이션과 `Arguments` 객체를 사용하면 서로 다른 자료형의 값 또한 테스트의 인자로 함께 입력받을 수 있습니다.
          */
-        @Test
+        @ParameterizedTest
+        @MethodSource("methodSourcesStringAndIntegerTestArguments")
         @DisplayName("MethodSource 애노테이션을 붙여 정수와 문자열 매개변수를 입력받는다")
-        void MethodSource_애노테이션을_붙여_정수와_문자열_매개변수를_입력받는다() {
+        void MethodSource_애노테이션을_붙여_정수와_문자열_매개변수를_입력받는다(String letter, int number) {
             // TODO: `MethodSource`를 사용하지 않고 문자열과 정수 변수들을 직접 선언하여 테스트하는 방식과, `MethodSource`를 통해 입력받아 테스트하는 방식의 차이를 비교해보세요.
-            assertEquals(Integer.parseInt("1"), 1);
-            assertEquals(Integer.parseInt("2"), 2);
-            assertEquals(Integer.parseInt("3"), 3);
-            assertEquals(Integer.parseInt("4"), 4);
+            assertEquals(Integer.parseInt(letter), number);
         }
 
         private static Stream<Arguments> methodSourcesStringAndIntegerTestArguments() {
-            return Stream.of(Arguments.arguments());
+            return Stream.of(
+                    Arguments.arguments("1", 1),
+                    Arguments.arguments("2", 2),
+                    Arguments.arguments("3", 3),
+                    Arguments.arguments("4", 4)
+            );
         }
     }
 
