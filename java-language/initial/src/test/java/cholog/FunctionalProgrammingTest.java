@@ -19,7 +19,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static java.lang.Integer.compare;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
@@ -115,6 +117,23 @@ public class FunctionalProgrammingTest {
              */
         }
 
+        static class Generic<T> {
+
+            private T ex;
+
+            private Generic(T ex) {
+                this.ex = ex;
+            }
+
+            public static <T> Generic<T> create(T input) {
+                return new Generic<>(input);
+            }
+
+            public T getEx() {
+                return ex;
+            }
+        }
+
         /**
          * Collections.sort() 메서드는 Comparator 인터페이스를 구현하는 클래스를 인자로 받습니다.
          * Comparator 인터페이스는 두 개의 인자를 받아서 비교하는 compare() 메서드를 가지고 있습니다.
@@ -135,15 +154,18 @@ public class FunctionalProgrammingTest {
 
             // TODO: 아래 코드를 Comparator를 구현하는 익명 클래스로 변경하여 User의 나이를 기준으로 정렬하세요. 람다로도 구현해보세요.
             final var users = new ArrayList<User>(List.of(brown, neo, brie));
-            for (int i = 0, end = users.size(); i < end; i++) {
-                for (int j = i + 1; j < end; j++) {
-                    if (users.get(i).age() > users.get(j).age()) {
-                        final var temp = users.get(i);
-                        users.set(i, users.get(j));
-                        users.set(j, temp);
-                    }
+
+            Comparator<User> comparator = new Comparator<User>() {
+                @Override
+                public int compare(final User u1, final User u2) {
+                    return u1.age - u2.age;
                 }
-            }
+            };
+            Comparator<User> comparator2 = (u1, u2) -> u1.age - u2.age;
+            Comparator<User> comparator3 = Comparator.comparingInt(u -> u.age);
+            Comparator<User> comparator4 = Comparator.comparing(u -> u.age);
+
+            users.sort(comparator);
 
             for (final var user : users) {
                 System.out.println(user.name() + ": " + user.age());
@@ -153,6 +175,12 @@ public class FunctionalProgrammingTest {
                     () -> assertThat(users).last().isSameAs(neo),
                     () -> assertThat(users).first().isSameAs(brie)
             );
+
+            // Generic 학습 테스트
+            Generic<String> generic1 = Generic.create("input");
+            Generic<Integer> generic2 = Generic.create(1);
+            System.out.println(generic1.getEx());
+            System.out.println(generic2.getEx());
         }
     }
 
