@@ -1,4 +1,4 @@
-package cholog;
+package cholog.list;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -23,5 +23,19 @@ public class ListStudy {
         // TODO values에 담긴 모든 값을 출력한다.
         values.forEach(System.out::println);
 
+    }
+
+    @Test
+    public void SimpleArrayListTest() {
+        SimpleArrayList simpleArrayList = new SimpleArrayList();
+        simpleArrayList.add("first");
+        simpleArrayList.add("second");
+
+        assertThat(simpleArrayList.add("third")).isTrue();
+        assertThat(simpleArrayList.size()).isEqualTo(3);
+        assertThat(simpleArrayList.get(0)).isEqualTo("first");
+        assertThat(simpleArrayList.contains("first")).isTrue();
+        assertThat(simpleArrayList.remove(0)).isEqualTo("first");
+        assertThat(simpleArrayList.size()).isEqualTo(2);
     }
 }
