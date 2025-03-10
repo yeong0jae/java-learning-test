@@ -3,7 +3,7 @@ package cholog.list;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class SimpleArrayList implements SimpleList {
+public class SimpleArrayList<E> implements SimpleList<E> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
@@ -30,12 +30,12 @@ public class SimpleArrayList implements SimpleList {
     }
 
     @Override
-    public boolean add(String value) {
+    public boolean add(E value) {
         add(value, elementData, size);
         return true;
     }
 
-    private void add(String value, Object[] elementData, int size) {
+    private void add(E value, Object[] elementData, int size) {
         if (size == elementData.length) {
             elementData = grow(size + 1);
         }
@@ -54,7 +54,7 @@ public class SimpleArrayList implements SimpleList {
     }
 
     @Override
-    public void add(int index, String value) {
+    public void add(int index, E value) {
         if (index > size || index < 0) {
             throw new IndexOutOfBoundsException();
         }
@@ -73,26 +73,26 @@ public class SimpleArrayList implements SimpleList {
     }
 
     @Override
-    public String set(int index, String value) {
+    public E set(int index, E value) {
         Objects.checkIndex(index, size);
-        String oldValue = (String) elementData[index];
+        E oldValue = (E) elementData[index];
         elementData[index] = value;
         return oldValue;
     }
 
     @Override
-    public String get(int index) {
+    public E get(int index) {
         Objects.checkIndex(index, size);
-        return (String) elementData[index];
+        return (E) elementData[index];
     }
 
     @Override
-    public boolean contains(String value) {
+    public boolean contains(E value) {
         return indexOf(value) >= 0;
     }
 
     @Override
-    public int indexOf(String value) {
+    public int indexOf(E value) {
         Object[] es = elementData;
         for (int i = 0; i < size; i++) {
             if (value.equals(es[i])) {
@@ -113,7 +113,7 @@ public class SimpleArrayList implements SimpleList {
     }
 
     @Override
-    public boolean remove(String value) {
+    public boolean remove(E value) {
         final Object[] es = elementData;
         final int size = this.size;
         int i = 0;
@@ -142,11 +142,11 @@ public class SimpleArrayList implements SimpleList {
     }
 
     @Override
-    public String remove(int index) {
+    public E remove(int index) {
         Objects.checkIndex(index, size);
         final Object[] es = elementData;
 
-        String oldValue = (String) es[index];
+        E oldValue = (E) es[index];
         fastRemove(es, index);
 
         return oldValue;

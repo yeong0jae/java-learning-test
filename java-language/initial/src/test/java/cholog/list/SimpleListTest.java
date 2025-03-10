@@ -5,7 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 
-public class ListStudy {
+public class SimpleListTest {
 
     @Test
     public void arrayList() {
@@ -20,14 +20,12 @@ public class ListStudy {
         assertThat(values.remove(0)).isEqualTo("first"); // 첫 번째 값을 삭제한다.
         assertThat(values.size()).isEqualTo(2); // 값이 삭제 됐는지 확인한다.
 
-        // TODO values에 담긴 모든 값을 출력한다.
         values.forEach(System.out::println);
-
     }
 
     @Test
     public void SimpleArrayListTest() {
-        SimpleArrayList simpleArrayList = new SimpleArrayList();
+        SimpleArrayList<String> simpleArrayList = new SimpleArrayList<>(2);
         simpleArrayList.add("first");
         simpleArrayList.add("second");
 
@@ -36,6 +34,20 @@ public class ListStudy {
         assertThat(simpleArrayList.get(0)).isEqualTo("first");
         assertThat(simpleArrayList.contains("first")).isTrue();
         assertThat(simpleArrayList.remove(0)).isEqualTo("first");
+        assertThat(simpleArrayList.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void SimpleArrayListTest2() {
+        SimpleArrayList<Integer> simpleArrayList = new SimpleArrayList<>(2);
+        simpleArrayList.add(1);
+        simpleArrayList.add(2);
+
+        assertThat(simpleArrayList.add(3)).isTrue();
+        assertThat(simpleArrayList.size()).isEqualTo(3);
+        assertThat(simpleArrayList.get(0)).isEqualTo(1);
+        assertThat(simpleArrayList.contains(1)).isTrue();
+        assertThat(simpleArrayList.remove(0)).isEqualTo(1);
         assertThat(simpleArrayList.size()).isEqualTo(2);
     }
 }
